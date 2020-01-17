@@ -73,7 +73,7 @@ let appData = {
       appData.income.sort();
     }
     appData.income.forEach(function (elem, index) {
-      alert('Способы доп. заработка: ' + (index + 1) + ' способ - ' + elem);
+      alert('Способы доп. заработка: ' + (index + 1) + 'способ - ' + elem);
     });
   }
 };
