@@ -44,11 +44,9 @@ window.addEventListener('DOMContentLoaded', function() {
       seconds = Math.floor((t / 1000) % 60) + '',
       minutes = Math.floor((t / 1000 / 60) % 60) + '',
       hours = Math.floor((t / (1000 * 60 * 60))) + '';
-      (hours.length == 1) && (hours = '0' + hours);
-      (minutes.length == 1) && (minutes = '0' + minutes);
-      (seconds.length == 1) && (seconds = '0' + seconds);
-      
-      
+
+
+
 
     return {
       'total': t,
@@ -67,9 +65,17 @@ window.addEventListener('DOMContentLoaded', function() {
 
     function updateClock() {
       let t = getTimeRemaining(endtime);
-      hours.textContent = t.hours;
-      minutes.textContent = t.minutes;
-      seconds.textContent = t.seconds;
+
+      function addZero(digit) {
+        if (digit.length == 1) {
+          digit = '0' + digit;
+        }
+        return digit;
+      };
+
+      hours.textContent = addZero(t.hours);
+      minutes.textContent = addZero(t.minutes);
+      seconds.textContent = addZero(t.seconds);
 
       if (t.total <= 0) {
         clearInterval(timeInterval);
