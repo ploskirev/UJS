@@ -47,9 +47,6 @@ window.addEventListener('DOMContentLoaded', function() {
       (hours.length == 1) && (hours = '0' + hours);
       (minutes.length == 1) && (minutes = '0' + minutes);
       (seconds.length == 1) && (seconds = '0' + seconds);
-      console.log(hours);
-      console.log(minutes);
-      console.log(seconds);
       
       
 
