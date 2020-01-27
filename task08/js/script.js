@@ -105,16 +105,6 @@ window.addEventListener('DOMContentLoaded', function() {
     document.body.style.overflow = '';
   });
 
-  // let descriptionBtns = document.querySelectorAll('.description-btn');
-  // for (let i = 0; i < descriptionBtns.length; i++) {
-  //   descriptionBtns[i].addEventListener('click', function() {
-  //     overlay.style.display = 'block';
-  //     more.classList.add('more-splash');
-  //     document.body.style.overflow = 'hidden';
-  //   });
-  // }
-
-
   infoMain.addEventListener('click', function(e) {
     let target = event.target;
     if (target && target.classList.contains('description-btn')) {
@@ -123,7 +113,6 @@ window.addEventListener('DOMContentLoaded', function() {
       document.body.style.overflow = 'hidden';
     }
   });
-
 });
 
 
