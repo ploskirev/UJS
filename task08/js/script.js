@@ -4,7 +4,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
   let tab = document.querySelectorAll('.info-header-tab'),
     info = document.querySelector('.info-header'),
-    tabContent = document.querySelectorAll('.info-tabcontent');
+    tabContent = document.querySelectorAll('.info-tabcontent'),
+    infoMain = document.querySelector('.info');
 
   function hideTabContent(a) {
     for (let i = a; i < tabContent.length; i++) {
@@ -37,7 +38,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // Timer 
 
-  let deadline = '2020-01-26';
+  let deadline = '2020-02-10';
 
   function getTimeRemaining(endtime) {
     let t = Date.parse(endtime) - Date.parse(new Date()),
@@ -87,4 +88,43 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   setClock('timer', deadline);
+
+  let more = document.querySelector('.more');
+  let overlay = document.querySelector('.overlay');
+  let close = document.querySelector('.popup-close');
+
+  more.addEventListener('click', function() {
+    overlay.style.display = 'block';
+    this.classList.add('more-splash');
+    document.body.style.overflow = 'hidden';
+  });
+
+  close.addEventListener('click', function() {
+    overlay.style.display = 'none';
+    more.classList.remove('more-splash');
+    document.body.style.overflow = '';
+  });
+
+  // let descriptionBtns = document.querySelectorAll('.description-btn');
+  // for (let i = 0; i < descriptionBtns.length; i++) {
+  //   descriptionBtns[i].addEventListener('click', function() {
+  //     overlay.style.display = 'block';
+  //     more.classList.add('more-splash');
+  //     document.body.style.overflow = 'hidden';
+  //   });
+  // }
+
+
+  infoMain.addEventListener('click', function(e) {
+    let target = event.target;
+    if (target && target.classList.contains('description-btn')) {
+      overlay.style.display = 'block';
+      more.classList.add('more-splash');
+      document.body.style.overflow = 'hidden';
+    }
+  });
+
 });
+
+
+
