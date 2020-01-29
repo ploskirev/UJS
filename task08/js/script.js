@@ -113,7 +113,81 @@ window.addEventListener('DOMContentLoaded', function() {
       document.body.style.overflow = 'hidden';
     }
   });
+
+  let message = {
+    loading: 'Загрузка...',
+    success: 'Спасибо! Скоро мы с Вами свяжемся!',
+    failure: 'Что-то пошло не так...'
+  };
+
+  let form = document.querySelector('.main-form');
+  let input = form.getElementsByTagName('input');
+  let statusMessage = document.createElement('div');
+
+  statusMessage.classList.add('status');
+
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    form.appendChild(statusMessage);
+
+    let request = new XMLHttpRequest();
+    request.open('POST', 'server.php');
+    request.setRequestHeader ('Content-Type', 'application/x-www-form-urlencoded');
+
+    let formData = new FormData(form);
+    request.send(formData);
+
+    request.addEventListener('readystatechange', function() {
+      if (request.readyState < 4) {
+        statusMessage.innerHTML = message.loading;
+      } else if (request.readyState === 4 && request.status == 200) {
+        statusMessage.innerHTML = message.success;
+      } else {
+        statusMessage.innerHTML = message.failure;
+      }
+    });
+
+    for (let i = 0; i < input.length; i++) {
+      input[i].value = '';
+    }
+
+  });
+
+  let contactForm = document.querySelector('#form');
+  let inputContactForm = contactForm.getElementsByTagName('input');
+
+  statusMessage.classList.add('status');
+
+  contactForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    contactForm.appendChild(statusMessage);
+
+    let request = new XMLHttpRequest();
+    request.open('POST', 'server.php');
+    request.setRequestHeader ('Content-Type', 'application/x-www-form-urlencoded');
+
+    let formDataContact = new FormData(form);
+    request.send(formDataContact);
+
+    request.addEventListener('readystatechange', function() {
+      if (request.readyState < 4) {
+        statusMessage.innerHTML = message.loading;
+      } else if (request.readyState === 4 && request.status == 200) {
+        statusMessage.innerHTML = message.success;
+      } else {
+        statusMessage.innerHTML = message.failure;
+      }
+    });
+
+    for (let i = 0; i < inputContactForm.length; i++) {
+      inputContactForm[i].value = '';
+    }
+
+  });
+
 });
+
+
 
 
 
