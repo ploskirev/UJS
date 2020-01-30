@@ -93,6 +93,9 @@ window.addEventListener('DOMContentLoaded', function() {
   let overlay = document.querySelector('.overlay');
   let close = document.querySelector('.popup-close');
 
+  let contactForm = document.querySelector('#form');
+  let inputContactForm = contactForm.getElementsByTagName('input');
+
   more.addEventListener('click', function() {
     overlay.style.display = 'block';
     this.classList.add('more-splash');
@@ -126,68 +129,261 @@ window.addEventListener('DOMContentLoaded', function() {
 
   statusMessage.classList.add('status');
 
-  form.addEventListener('submit', function(event) {
-    event.preventDefault();
-    form.appendChild(statusMessage);
+  function sendForm(elem, inputs) {
+    elem.addEventListener('submit', function(event) {
+      event.preventDefault();
+      elem.appendChild(statusMessage);
+      let formData = new FormData(elem);
 
-    let request = new XMLHttpRequest();
-    request.open('POST', 'server.php');
-    request.setRequestHeader ('Content-Type', 'application/x-www-form-urlencoded');
+      function postData(data) {
 
-    let formData = new FormData(form);
-    request.send(formData);
+        return new Promise(function(resolve, reject) {
+          let request = new XMLHttpRequest();
+          request.open('POST', 'server.php');
+          request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-    request.addEventListener('readystatechange', function() {
-      if (request.readyState < 4) {
-        statusMessage.innerHTML = message.loading;
-      } else if (request.readyState === 4 && request.status == 200) {
-        statusMessage.innerHTML = message.success;
-      } else {
-        statusMessage.innerHTML = message.failure;
+          request.onreadystatechange = function() {
+            if (request.readyState < 4) {
+              resolve();
+            } else if (request.readyState === 4) {
+              if (request.status == 200 && request.status < 300) {
+                resolve();
+              } else {
+                reject();
+              }
+            }
+          }
+
+          request.send(data);
+        });
       }
-    });
 
-    for (let i = 0; i < input.length; i++) {
-      input[i].value = '';
-    }
-
-  });
-
-  let contactForm = document.querySelector('#form');
-  let inputContactForm = contactForm.getElementsByTagName('input');
-
-  statusMessage.classList.add('status');
-
-  contactForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-    contactForm.appendChild(statusMessage);
-
-    let request = new XMLHttpRequest();
-    request.open('POST', 'server.php');
-    request.setRequestHeader ('Content-Type', 'application/x-www-form-urlencoded');
-
-    let formDataContact = new FormData(form);
-    request.send(formDataContact);
-
-    request.addEventListener('readystatechange', function() {
-      if (request.readyState < 4) {
-        statusMessage.innerHTML = message.loading;
-      } else if (request.readyState === 4 && request.status == 200) {
-        statusMessage.innerHTML = message.success;
-      } else {
-        statusMessage.innerHTML = message.failure;
+      function clearInput() {
+        for (let i = 0; i < inputs.length; i++) {
+          inputs[i].value = '';
+        }
       }
+
+      postData(formData)
+        .then(() => statusMessage.innerHTML = message.loading)
+        .then(() => statusMessage.innerHTML = message.success)
+        .catch(() => statusMessage.innerHTML = message.failure)
+        .then(clearInput)
     });
+  }
+  sendForm(form, input);
+  sendForm(contactForm, inputContactForm);
 
-    for (let i = 0; i < inputContactForm.length; i++) {
-      inputContactForm[i].value = '';
+
+// Slider
+
+let slideIndex = 0;
+let slides = document.querySelectorAll('.slider-item');
+let prev = document.querySelector('.prev');
+let next = document.querySelector('.next');
+let dotsWrap = document.querySelector('.slider-dots');
+let dots = document.querySelectorAll('.dot');
+
+
+showSlides(slideIndex);
+// function showSlides(n) {
+
+//   if (n > slides.length) {
+//     slideIndex = 1;
+//   }
+//   if (n < 1) {
+//     slideIndex = slides.length;
+//   }
+
+//   slides.forEach((item) => item.style.display = 'none');
+//   dots.forEach((item) => item.classList.remove('dot-active'));
+
+//   slides[slideIndex - 1].style.display = 'block';
+//   dots[slideIndex - 1].classList.add('dot-active');
+// }
+
+// function plusSlides(n) {
+//   showSlides(slideIndex += n);
+// }
+// function currentSlide(n) {
+//   showSlides(slideIndex = n);
+// }
+
+// prev.addEventListener('click', function() {
+//   plusSlides(-1);
+// })
+
+// next.addEventListener('click', function() {
+//   plusSlides(1);
+// })
+
+function showSlides(n) {
+  n = checkSlideIndex(n);
+  slides.forEach((item) => item.style.display = 'none');
+  dots.forEach((item) => item.classList.remove('dot-active'));
+  slides[n].style.display = 'block';
+  dots[n].classList.add('dot-active');
+  slideIndex = n;
+}
+
+function checkSlideIndex(n) {
+  if (n < 0) {
+    n = slides.length - 1;
+  }
+  if (n > slides.length - 1) {
+    n = 0;
+  }
+  return n;
+}
+
+function nextSlide() {
+  showSlides(++slideIndex);
+}
+
+function prevSlide() {
+  showSlides(--slideIndex);
+}
+
+next.addEventListener('click', nextSlide);
+prev.addEventListener('click', prevSlide);
+
+dotsWrap.addEventListener('click', function(e) {
+  for (let i = 0; i < dots.length; i++) {
+    if (e.target.classList.contains('dot') && e.target == dots[i]) {
+      showSlides(i);
     }
+  }
+})
 
-  });
+// Calculator
+
+let persons = document.querySelectorAll('.counter-block-input')[0];
+let restDays = document.querySelectorAll('.counter-block-input')[1];
+let place = document.getElementById('select');
+let totalValue = document.getElementById('total');
+let personsSum = 0;
+let daysSum = 0;
+let total = 0;
+
+totalValue.innerHTML = 0;
+
+// persons.addEventListener('change', function() {
+//   personsSum = +this.value;
+//   total = (daysSum + personsSum) * 4000;
+
+//   if (restDays.value == '') {
+//     totalValue.innerHTML = 0;
+//   } else {
+//     totalValue.innerHTML = total;
+//   }
+// });
+
+persons.addEventListener('change', function() {
+  if (restDays.value == '' || this.value == '' || restDays.value == 0 || this.value == 0) {
+    totalValue.innerHTML = 0;
+  } else {
+    personsSum = +this.value;
+    total = (daysSum + personsSum) * 4000;
+    totalValue.innerHTML = total;
+  }
+});
+
+restDays.addEventListener('change', function() {
+  if (persons.value == '' || this.value == '' || persons.value == 0 || this.value == 0) {
+    totalValue.innerHTML = 0;
+  } else {
+    daysSum = +this.value;
+    total = (daysSum + personsSum) * 4000;
+    totalValue.innerHTML = total;
+  }
+});
+
+place.addEventListener('change', function() {
+  if (restDays.value == '' || persons.value == '') {
+    totalValue.innerHTML = 0;
+  } else {
+    let a = total;
+    totalValue.innerHTML = a * this.options[this.selectedIndex].value;
+  }
+})
 
 });
 
 
 
+// let drink = 1;
+
+// function shoot(arrow, headshot, fail) {
+//   console.log('Вы выстрелили...');
+
+//   setTimeout(function() {
+//     Math.random() > .5 ? headshot({}) : fail('Вы промахнулись');
+//   }, 3000)
+// };
+
+// function win() {
+//   console.log('Вы победили!');
+//   (drink == 1) ? buyBeer(): giveMoney();
+// }
+
+// function buyBeer() {
+//   console.log('Вам купили пиво');
+// }
+
+// function giveMoney() {
+//   console.log('Вам заплатили');
+// }
+
+// function loose() {
+//   console.log('Вы проиграли');
+// }
+
+// shoot({},
+//   function(mark) {
+//     console.log('Вы попали в цель!');
+//     win(mark);
+//   },
+//   function(miss) {
+//     console.error(miss);
+//     loose();
+//   }
+// )
 
 
+// let drink = 0;
+
+// function shoot(arrow) {
+//   console.log('Вы сделали выстрел..');
+
+//   let promise = new Promise(function(resolve, reject) {
+//     setTimeout(function() {
+//       Math.random() > .5 ? resolve({}) : reject('Вы промахнулись');
+//     }, 3000);
+//   });
+
+//   return promise;
+
+// };
+
+
+// function win() {
+//   console.log('Вы победили!');
+//   (drink == 1) ? buyBeer(): giveMoney();
+// }
+
+// function buyBeer() {
+//   console.log('Вам купили пиво');
+// }
+
+// function giveMoney() {
+//   console.log('Вам заплатили');
+// }
+
+// function loose() {
+//   console.log('Вы проиграли');
+// }
+
+// shoot({})
+//   .then(mark => console.log('Вы попали в цель!'))
+//   .then(win)
+//   .catch(loose)
